@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">高知DX部 favicon</title>
+  <desc id="desc">高知DX部を表す温かい色のピン型アイコン</desc>
+  <defs>
+    <linearGradient id="bg" x1="12" y1="10" x2="52" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0a54a"/>
+      <stop offset="1" stop-color="#7b3f19"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="52" height="52" rx="18" fill="#fff4e5"/>
+  <path d="M32 14c-8.84 0-16 7.16-16 16 0 11.43 14.17 20.96 15.13 21.59a1.6 1.6 0 0 0 1.74 0C33.83 50.96 48 41.43 48 30c0-8.84-7.16-16-16-16Z" fill="url(#bg)"/>
+  <circle cx="32" cy="30" r="6.8" fill="#fff4e5"/>
+  <path d="M22 49h20" stroke="#155c56" stroke-width="4" stroke-linecap="round"/>
+</svg>
