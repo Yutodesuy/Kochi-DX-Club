@@ -5,61 +5,83 @@ import { motion } from 'framer-motion';
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
 const AREAS = [
-  {
-    icon: '🏯',
-    title: '地域文化の継承と進化',
-    desc: '日曜市のような地域の文化や場の魅力を、壊さずにデジタルの力でアップデートする。',
-  },
-  {
-    icon: '🎨',
-    title: 'デジタルデザイン',
-    desc: '使いやすさと体験価値を両立するUI / UXを考える。見た目だけでなく、人の動きを設計する。',
-  },
-  {
-    icon: '🔬',
-    title: 'フィールドリサーチ',
-    desc: '机上ではなく、現地と対話から課題を確かめる。行政や地域の人たちと話す経験が積める。',
-  },
-  {
-    icon: '🌏',
-    title: '社会へのインパクト',
-    desc: '学生の制作物を、地域で役立つ仕組みにまで育てる。「作って終わり」ではない実践をする。',
-  },
+  { icon: '🏯', title: '地域文化の継承と進化', sub: '壊さず、アップデートする' },
+  { icon: '🎨', title: 'デジタルデザイン',      sub: 'UX設計から実装まで' },
+  { icon: '🔬', title: 'フィールドリサーチ',    sub: '現地と行政との対話' },
+  { icon: '🌏', title: '社会実装',              sub: '地域に使われる仕組みへ' },
 ];
 
 export default function FocusAreas() {
   return (
-    <section className="section section-alt">
-      <div className="container">
+    <section
+      style={{
+        background: 'linear-gradient(160deg, #0e0704 0%, #1c1008 60%, #0c1a16 100%)',
+        padding: '120px 0',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* 背景グロー */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', bottom: -120, left: '30%',
+        width: '60vw', height: '60vw', borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(21,92,86,0.12), transparent 65%)',
+        pointerEvents: 'none',
+      }} />
+
+      <div style={{ padding: '0 var(--px)' }}>
         <motion.div
-          className="section-head"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.70, ease }}
+          transition={{ duration: 0.7, ease }}
           viewport={{ once: true, margin: '-60px' }}
+          style={{ marginBottom: 64 }}
         >
-          <p className="eyebrow">Focus Areas</p>
-          <h2 className="section-title">高知DX部が向き合う4つの視点</h2>
-          <p className="section-lead">
-            一つのサービスをつくるだけではなく、課題発見から運用まで通して高知の未来に
-            つながる実践力を育てます。
-          </p>
+          <span className="eyebrow eyebrow-light" style={{ marginBottom: 14 }}>Focus Areas</span>
+          <h2 className="display-serif" style={{
+            fontSize: 'clamp(2rem, 4vw, 4rem)',
+            color: '#fff', lineHeight: 1.1,
+          }}>
+            4つの視点で、<br />高知の未来をつくる。
+          </h2>
         </motion.div>
 
-        <div className="focus-grid">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: 16,
+        }}>
           {AREAS.map((a, i) => (
-            <motion.article
+            <motion.div
               key={a.title}
-              className="focus-card"
-              initial={{ opacity: 0, y: 28 }}
+              initial={{ opacity: 0, y: 36 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.60, ease, delay: i * 0.09 }}
-              viewport={{ once: true, margin: '-30px' }}
+              transition={{ duration: 0.65, ease, delay: i * 0.10 }}
+              viewport={{ once: true, margin: '-40px' }}
+              whileHover={{ y: -6, transition: { duration: 0.25 } }}
+              style={{
+                padding: '36px 28px',
+                borderRadius: 24,
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                cursor: 'default',
+              }}
             >
-              <div className="focus-icon" aria-hidden="true">{a.icon}</div>
-              <h3 className="focus-title">{a.title}</h3>
-              <p className="focus-desc">{a.desc}</p>
-            </motion.article>
+              <div style={{
+                fontSize: 40,
+                marginBottom: 20,
+                filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.30))',
+              }}>{a.icon}</div>
+              <h3 style={{
+                fontSize: '1.1rem', fontWeight: 800,
+                color: '#fff', lineHeight: 1.35,
+                marginBottom: 8,
+              }}>{a.title}</h3>
+              <p style={{
+                fontSize: '0.86rem', lineHeight: 1.65,
+                color: 'rgba(255,255,255,0.42)',
+              }}>{a.sub}</p>
+            </motion.div>
           ))}
         </div>
       </div>

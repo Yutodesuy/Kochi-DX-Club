@@ -1,143 +1,172 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import Image from 'next/image';
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
-const POINTS = [
-  {
-    title: 'マップで全体をつかむ',
-    desc: '広い市の中で、自分がどこから歩き始めるかを決めやすくする。初めてでも迷わない体験を設計します。',
-  },
-  {
-    title: '気になるものを見つけやすくする',
-    desc: '検索やカテゴリ整理を通じて、初見でも探索しやすい導線を整える。掘り出し物との出会いをデジタルで再現します。',
-  },
-  {
-    title: '相談しづらさを下げる',
-    desc: '案内役の存在で、最初の一声への心理的ハードルを下げる。デジタルが「人との距離」を縮める役割を担います。',
-  },
-];
-
-const SKILLS = [
-  'UI / UX 設計',
-  'フロントエンド開発',
-  'データ整理と可視化',
-  'ユーザーインタビュー設計',
-  '行政・地域との対話',
-  'プロダクト企画',
-];
-
-const THEMES = [
-  '観光導線の改善',
-  '地域商店と来訪者の接点づくり',
-  '高知で暮らす人の不便の解消',
-  '若い世代が地域課題に参加できる仕組みづくり',
-];
+const SKILLS = ['UI / UX 設計', 'フロントエンド開発', 'データ設計', 'ユーザーリサーチ', '行政連携'];
 
 export default function Project() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+  const imgScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.06, 1.0, 1.06]);
+
   return (
-    <section className="section" id="project">
-      <div className="container">
+    <section id="project" style={{ background: 'var(--paper)', padding: '120px 0', position: 'relative' }}>
+      {/* 縦書きサイドラベル */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', right: 18, top: '50%',
+        transform: 'translateY(-50%)',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', gap: 12,
+      }}>
+        <div style={{ width: 1, height: 40, background: 'linear-gradient(to bottom, transparent, rgba(123,63,25,0.20))' }} />
+        <span style={{
+          writingMode: 'vertical-rl',
+          fontSize: '0.64rem', fontWeight: 800,
+          letterSpacing: '0.28em',
+          color: 'rgba(123,63,25,0.22)',
+        }}>プロジェクト</span>
+        <div style={{ width: 1, height: 40, background: 'linear-gradient(to bottom, rgba(123,63,25,0.20), transparent)' }} />
+      </div>
+
+      <div style={{ padding: '0 var(--px)' }}>
+        {/* ヘッダー */}
         <motion.div
-          className="section-head"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.70, ease }}
+          transition={{ duration: 0.7, ease }}
           viewport={{ once: true, margin: '-60px' }}
+          style={{ marginBottom: 64 }}
         >
-          <p className="eyebrow">First Project</p>
-          <h2 className="section-title">
-            第一目標は、日曜市デジタルマップの開発
+          <span className="eyebrow eyebrow-soil" style={{ marginBottom: 14 }}>First Project</span>
+          <h2 className="display-serif" style={{
+            fontSize: 'clamp(2rem, 4vw, 4.5rem)',
+            color: 'var(--soil-deep)', lineHeight: 1.1,
+            maxWidth: 680,
+          }}>
+            第一目標は、<br />日曜市デジタルマップの開発。
           </h2>
-          <p className="section-lead">
-            <strong>nicchyo</strong> の方向性をベースに、日曜市を「迷う場所」ではなく
-            「楽しみが広がる場所」に変えるためのデジタル体験を磨いていきます。
-          </p>
         </motion.div>
 
-        <div className="project-layout">
-          {/* Main feature */}
-          <motion.article
-            className="project-main"
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.70, ease }}
-            viewport={{ once: true, margin: '-40px' }}
+        {/* スプリット */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 48,
+          alignItems: 'center',
+        }}>
+          {/* 左: 写真 */}
+          <motion.div
+            ref={ref}
+            initial={{ opacity: 0, x: -32 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.85, ease }}
+            viewport={{ once: true, margin: '-60px' }}
+            style={{
+              position: 'relative',
+              borderRadius: 32,
+              overflow: 'hidden',
+              aspectRatio: '4/3',
+              boxShadow: '0 32px 80px rgba(14,7,4,0.18)',
+            }}
           >
-            <p className="project-main-label">Featured</p>
-            <h3 className="project-main-title">
-              日曜市をもっと歩きやすく、もっと知りやすく。
-            </h3>
-            <p className="project-main-desc">
-              nicchyo は、地図を見る・気になるものを探す・案内役に相談する、という体験を
-              一つにつないだデジタルマップです。目的は効率化そのものではなく、
-              日曜市の楽しさを最大化することにあります。
+            <motion.div style={{ scale: imgScale, width: '100%', height: '100%' }}>
+              <Image
+                src="/nichiyoichi.jpg"
+                alt="高知の日曜市の風景"
+                fill
+                style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
+              />
+            </motion.div>
+            {/* 写真上の縦書きキャプション */}
+            <div style={{
+              position: 'absolute', right: 16, top: 0, bottom: 0,
+              display: 'flex', alignItems: 'center',
+              zIndex: 2,
+            }}>
+              <span style={{
+                writingMode: 'vertical-rl',
+                fontSize: '0.66rem', fontWeight: 700,
+                letterSpacing: '0.22em',
+                color: 'rgba(255,255,255,0.55)',
+                background: 'rgba(0,0,0,0.25)',
+                padding: '10px 5px',
+                borderRadius: 4,
+                backdropFilter: 'blur(4px)',
+              }}>
+                高知県 日曜市
+              </span>
+            </div>
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(135deg, rgba(10,5,2,0.22), transparent)',
+            }} />
+          </motion.div>
+
+          {/* 右: テキスト */}
+          <motion.div
+            initial={{ opacity: 0, x: 32 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.85, ease, delay: 0.10 }}
+            viewport={{ once: true, margin: '-60px' }}
+          >
+            <div style={{
+              fontFamily: 'var(--font-display, serif)',
+              fontSize: 'clamp(4rem, 8vw, 9rem)',
+              fontWeight: 700,
+              lineHeight: 0.9,
+              color: 'var(--soil-deep)',
+              letterSpacing: '-0.02em',
+              marginBottom: 28,
+            }}>
+              nicchyo
+            </div>
+
+            <p style={{
+              fontSize: '1.08rem', lineHeight: 1.9,
+              color: 'var(--muted)',
+              marginBottom: 36, maxWidth: 440,
+            }}>
+              はじめての日曜市でも迷わず歩けるように。
+              マップ・検索・案内役を一つにつないだ
+              デジタルマップを育てています。
             </p>
 
-            <ul className="project-points">
-              {POINTS.map((p, i) => (
-                <motion.li
-                  key={p.title}
-                  className="project-point"
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.55, ease, delay: i * 0.08 }}
-                  viewport={{ once: true, margin: '-20px' }}
-                >
-                  <p className="project-point-title">{p.title}</p>
-                  <p className="project-point-desc">{p.desc}</p>
-                </motion.li>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 36 }}>
+              {SKILLS.map((s, i) => (
+                <motion.span
+                  key={s}
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 0.2 + i * 0.06 }}
+                  viewport={{ once: true }}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center',
+                    height: 34, padding: '0 16px', borderRadius: 999,
+                    background: 'rgba(123,63,25,0.09)',
+                    border: '1px solid rgba(123,63,25,0.14)',
+                    fontSize: '0.86rem', fontWeight: 700,
+                    color: 'var(--soil-deep)',
+                  }}
+                >{s}</motion.span>
               ))}
-            </ul>
-
-            <div style={{ marginTop: '28px' }}>
-              <a
-                className="btn btn-ghost"
-                href="https://nicchyo-platform-git-develop-yutodesuys-projects.vercel.app?_vercel_share=xjdcMGY6Nrr6Rqse5BEqdPlOfu9fru58"
-                target="_blank"
-                rel="noreferrer"
-                style={{ display: 'inline-flex' }}
-              >
-                nicchyo を実際に見てみる →
-              </a>
             </div>
-          </motion.article>
 
-          {/* Side cards */}
-          <div className="project-side">
-            <motion.article
-              className="project-side-card"
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, ease, delay: 0.10 }}
-              viewport={{ once: true, margin: '-40px' }}
+            <a
+              href="https://nicchyo-platform-git-develop-yutodesuys-projects.vercel.app?_vercel_share=xjdcMGY6Nrr6Rqse5BEqdPlOfu9fru58"
+              target="_blank" rel="noreferrer"
+              className="btn btn-primary"
+              style={{ display: 'inline-flex' }}
             >
-              <p className="project-side-label">このプロジェクトで磨く力</p>
-              <h3 className="project-side-title">実案件で身につくスキル</h3>
-              <ul className="dot-list">
-                {SKILLS.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
-            </motion.article>
-
-            <motion.article
-              className="project-side-card"
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, ease, delay: 0.18 }}
-              viewport={{ once: true, margin: '-40px' }}
-            >
-              <p className="project-side-label">日曜市の先に広げたいテーマ</p>
-              <h3 className="project-side-title">次に挑みたい高知の課題</h3>
-              <ul className="dot-list">
-                {THEMES.map((t) => (
-                  <li key={t}>{t}</li>
-                ))}
-              </ul>
-            </motion.article>
-          </div>
+              nicchyo を実際に見てみる →
+            </a>
+          </motion.div>
         </div>
       </div>
     </section>

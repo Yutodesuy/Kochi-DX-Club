@@ -18,7 +18,7 @@ export default function HomePage() {
       <Header formUrl={FORM_URL} />
       <main id="main">
         <Hero formUrl={FORM_URL} />
-        <RecruitBanner formUrl={FORM_URL} />
+        <RecruitBanner />
         <Mission />
         <Project />
         <FocusAreas />

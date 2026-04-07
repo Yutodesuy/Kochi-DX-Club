@@ -5,67 +5,96 @@ import { motion } from 'framer-motion';
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
 const STEPS = [
-  {
-    num: 'Step 1',
-    icon: '👁',
-    title: '見に行く',
-    desc: '現場に入り、困りごとや迷いがどこで生まれているかを観察する。仮説より先に事実を集める。',
-  },
-  {
-    num: 'Step 2',
-    icon: '💬',
-    title: '聞いて整理する',
-    desc: '来訪者、地域の方、行政との対話から、本質的な課題を言語化する。表面ではなく根っこをつかむ。',
-  },
-  {
-    num: 'Step 3',
-    icon: '🛠',
-    title: 'つくって試す',
-    desc: '必要最低限の機能から形にして、実際に触ってもらい、反応を得る。完璧より速さを優先する。',
-  },
-  {
-    num: 'Step 4',
-    icon: '🔄',
-    title: '改善して広げる',
-    desc: '検証結果を踏まえて磨き込み、次の高知の課題にも応用できる形にする。学びを積み重ねていく。',
-  },
+  { n: '1', icon: '👁',  label: '見に行く',    sub: '現場で観察する' },
+  { n: '2', icon: '💬', label: '聞いて整理',   sub: '課題を言語化する' },
+  { n: '3', icon: '🛠',  label: 'つくって試す', sub: '速くプロトを出す' },
+  { n: '4', icon: '🔄', label: '改善・拡大',   sub: '磨いて次へ広げる' },
 ];
 
 export default function Workflow() {
   return (
-    <section className="section" id="workflow">
-      <div className="container">
+    <section id="workflow" style={{ background: 'var(--paper-2)', padding: '120px 0' }}>
+      <div style={{ padding: '0 var(--px)' }}>
         <motion.div
-          className="section-head"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.70, ease }}
+          transition={{ duration: 0.7, ease }}
           viewport={{ once: true, margin: '-60px' }}
+          style={{ marginBottom: 72, maxWidth: 520 }}
         >
-          <p className="eyebrow">How We Work</p>
-          <h2 className="section-title">活動の進め方</h2>
-          <p className="section-lead">
-            高知DX部では「思いついたから作る」のではなく、調査・試作・検証を往復しながら
-            一段ずつ精度を上げていきます。
-          </p>
+          <span className="eyebrow eyebrow-soil" style={{ marginBottom: 14 }}>How We Work</span>
+          <h2 className="display-serif" style={{
+            fontSize: 'clamp(2rem, 4vw, 4rem)',
+            color: 'var(--soil-deep)', lineHeight: 1.1,
+          }}>
+            調査→試作→検証を<br />繰り返しながら前に進む。
+          </h2>
         </motion.div>
 
-        <div className="workflow-steps">
-          {STEPS.map((s, i) => (
-            <motion.div
-              key={s.num}
-              className="workflow-step"
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.60, ease, delay: i * 0.10 }}
-              viewport={{ once: true, margin: '-30px' }}
-            >
-              <p className="step-num">{s.num}</p>
-              <p className="step-icon" aria-hidden="true">{s.icon}</p>
-              <h3 className="step-title">{s.title}</h3>
-              <p className="step-desc">{s.desc}</p>
-            </motion.div>
-          ))}
+        {/* ステップ */}
+        <div style={{ position: 'relative' }}>
+          {/* 繋ぐライン */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            transition={{ duration: 1.2, ease: 'easeInOut', delay: 0.2 }}
+            viewport={{ once: true, margin: '-40px' }}
+            style={{
+              position: 'absolute',
+              top: 40, left: 'calc(12.5% + 16px)', right: 'calc(12.5% + 16px)',
+              height: 1,
+              background: 'linear-gradient(90deg, var(--sun), var(--soil))',
+              transformOrigin: 'left',
+            }}
+          />
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 24,
+          }}>
+            {STEPS.map((s, i) => (
+              <motion.div
+                key={s.n}
+                initial={{ opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, ease, delay: i * 0.12 }}
+                viewport={{ once: true, margin: '-30px' }}
+                style={{ textAlign: 'center' }}
+              >
+                {/* 円 */}
+                <div style={{
+                  width: 80, height: 80,
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, rgba(224,144,48,0.15), rgba(123,63,25,0.10))',
+                  border: '1.5px solid rgba(123,63,25,0.16)',
+                  display: 'grid', placeItems: 'center',
+                  margin: '0 auto 24px',
+                  fontSize: 28,
+                  position: 'relative',
+                  zIndex: 1,
+                  boxShadow: '0 0 0 6px var(--paper-2)',
+                }}>
+                  {s.icon}
+                </div>
+
+                <div style={{
+                  fontSize: '0.72rem', fontWeight: 800,
+                  letterSpacing: '0.18em', textTransform: 'uppercase',
+                  color: 'var(--soil)', marginBottom: 8,
+                }}>
+                  Step {s.n}
+                </div>
+                <h3 style={{
+                  fontSize: '1.15rem', fontWeight: 800,
+                  color: 'var(--soil-deep)', marginBottom: 6,
+                }}>{s.label}</h3>
+                <p style={{
+                  fontSize: '0.88rem', color: 'var(--muted)', lineHeight: 1.6,
+                }}>{s.sub}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,138 +1,282 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 28 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.75, ease, delay },
-});
+const vertBase: React.CSSProperties = {
+  writingMode: 'vertical-rl',
+  textOrientation: 'mixed',
+  letterSpacing: '0.26em',
+  userSelect: 'none',
+};
 
 export default function Hero({ formUrl }: { formUrl: string }) {
-  const ctaHref = formUrl || '#join';
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end start'],
+  });
+
+  const imgY   = useTransform(scrollYProgress, [0, 1], ['0%', '28%']);
+  const textY  = useTransform(scrollYProgress, [0, 0.6], ['0px', '-60px']);
+  const textOp = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  const ctaHref   = formUrl || '#join';
   const ctaTarget = formUrl ? '_blank' : undefined;
-  const ctaRel = formUrl ? 'noreferrer' : undefined;
+  const ctaRel    = formUrl ? 'noreferrer' : undefined;
 
   return (
-    <section className="hero" id="top">
-      <div className="hero-grid-lines" aria-hidden="true" />
-      <div className="container hero-grid">
-        {/* ── Left: Copy ── */}
-        <div className="hero-copy">
-          {/* Award badge */}
-          <motion.div {...fadeUp(0.05)}>
-            <div className="award-badge">
-              <span className="award-icon" aria-hidden="true">🏆</span>
-              <span className="award-text">
-                <span className="award-name">こうちNPOアワード2025「ワカモノ未来賞」受賞</span>
-                <span className="award-sub">高知市商業振興課と連携した実案件</span>
-              </span>
-            </div>
-          </motion.div>
+    <section
+      ref={ref}
+      id="top"
+      style={{
+        position: 'relative',
+        height: '100svh',
+        minHeight: 600,
+        overflow: 'hidden',
+        background: '#0e0704',
+      }}
+    >
+      {/* 背景写真（視差） */}
+      <motion.div
+        aria-hidden="true"
+        style={{ position: 'absolute', inset: '-25% 0', y: imgY }}
+      >
+        <Image
+          src="/nichiyoichi.jpg"
+          alt=""
+          fill
+          priority
+          style={{ objectFit: 'cover', objectPosition: 'center 45%' }}
+        />
+      </motion.div>
 
-          {/* Flags */}
-          <motion.div className="flag-group" {...fadeUp(0.12)}>
-            <span className="flag">高知高専発</span>
-            <span className="flag">2026年度始動</span>
-            <span className="flag">部員大募集</span>
-          </motion.div>
+      {/* オーバーレイ */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to top, rgba(10,5,2,0.90) 0%, rgba(10,5,2,0.52) 45%, rgba(10,5,2,0.18) 100%)',
+      }} />
 
-          {/* Headline */}
-          <motion.h1 className="hero-h1" {...fadeUp(0.18)}>
-            高知高専から、<br />
-            高知の課題を<br />
-            <em>DXでほどく。</em>
-          </motion.h1>
+      {/* ── 縦書き：左サイド「高知高専 × 地域DX」 ── */}
+      <motion.div
+        aria-hidden="true"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2, delay: 1.0 }}
+        style={{
+          position: 'absolute',
+          left: 22,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 16,
+        }}
+      >
+        <div style={{
+          width: 1, height: 60,
+          background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.28))',
+        }} />
+        <span style={{
+          ...vertBase,
+          fontSize: '0.68rem',
+          fontWeight: 700,
+          color: 'rgba(255,255,255,0.28)',
+        }}>
+          高知工業高等専門学校
+        </span>
+        <div style={{
+          width: 1, height: 60,
+          background: 'linear-gradient(to bottom, rgba(255,255,255,0.28), transparent)',
+        }} />
+      </motion.div>
 
-          {/* Lead */}
-          <motion.p className="hero-lead" {...fadeUp(0.26)}>
-            高知DX部は、高知工業高等専門学校の学生が地域課題に本気で向き合うための新しい部活です。
-            2026年度から始動し、第一プロジェクトとして高知県の日曜市をもっと歩きやすく、
-            もっと楽しくするデジタルマップ <strong>「nicchyo」</strong> を育てています。
-            開発だけでなく、デザイン、調査、企画まで含めて高知高専らしい実践をつくっていきます。
-          </motion.p>
+      {/* ── 縦書き：右サイド「2026年度始動」 ── */}
+      <motion.div
+        aria-hidden="true"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2, delay: 1.1 }}
+        style={{
+          position: 'absolute',
+          right: 22,
+          top: 'calc(var(--header-h) + 48px)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 12,
+        }}
+      >
+        <span style={{
+          ...vertBase,
+          fontSize: '0.66rem',
+          fontWeight: 800,
+          color: 'rgba(255,255,255,0.22)',
+        }}>
+          二〇二六年度始動
+        </span>
+        <div style={{
+          width: 1, height: 48,
+          background: 'linear-gradient(to bottom, rgba(255,255,255,0.20), transparent)',
+        }} />
+      </motion.div>
 
-          {/* Actions */}
-          <motion.div className="hero-actions" {...fadeUp(0.32)}>
-            <a className="btn btn-primary" href={ctaHref} target={ctaTarget} rel={ctaRel}>
-              興味のある学生はこちら
-            </a>
-            <a
-              className="btn btn-ghost"
-              href="https://nicchyo-platform-git-develop-yutodesuys-projects.vercel.app?_vercel_share=xjdcMGY6Nrr6Rqse5BEqdPlOfu9fru58"
-              target="_blank"
-              rel="noreferrer"
-            >
-              nicchyo を確認する
-            </a>
-          </motion.div>
+      {/* 受賞バッジ */}
+      <motion.div
+        initial={{ opacity: 0, y: -16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease, delay: 0.8 }}
+        style={{
+          position: 'absolute',
+          top: 'calc(var(--header-h) + 24px)',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          padding: '9px 18px 9px 10px',
+          borderRadius: 999,
+          background: 'rgba(255,255,255,0.09)',
+          border: '1px solid rgba(255,255,255,0.18)',
+          backdropFilter: 'blur(10px)',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        <span style={{
+          width: 30, height: 30, borderRadius: '50%',
+          background: 'linear-gradient(135deg,#f5c842,#e09030)',
+          display: 'grid', placeItems: 'center',
+          fontSize: 15, flexShrink: 0,
+        }}>🏆</span>
+        <span style={{ lineHeight: 1.4 }}>
+          <span style={{
+            display: 'block', fontSize: '0.70rem', fontWeight: 800,
+            color: '#ffd87a', letterSpacing: '0.04em',
+          }}>
+            こうちNPOアワード2025「ワカモノ未来賞」受賞
+          </span>
+          <span style={{ display: 'block', fontSize: '0.66rem', color: 'rgba(255,255,255,0.55)' }}>
+            高知市商業振興課と連携した実案件
+          </span>
+        </span>
+      </motion.div>
 
-          {/* Stats */}
-          <motion.ul className="hero-stats" {...fadeUp(0.40)}>
-            <li className="hero-stat">
-              <p className="hero-stat-label">Campus</p>
-              <p className="hero-stat-value">高知高専の新しい課題解決部活</p>
-            </li>
-            <li className="hero-stat">
-              <p className="hero-stat-label">Start</p>
-              <p className="hero-stat-value">2026年度から始動</p>
-            </li>
-            <li className="hero-stat">
-              <p className="hero-stat-label">Recruit</p>
-              <p className="hero-stat-value">開発・デザイン・調査の仲間を募集</p>
-            </li>
-          </motion.ul>
-        </div>
-
-        {/* ── Right: Visual ── */}
-        <motion.div
-          className="hero-panel"
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.9, ease, delay: 0.20 }}
-        >
-          {/* Photo */}
-          <figure className="photo-frame" style={{ margin: 0 }}>
-            <Image
-              src="/nichiyoichi.jpg"
-              alt="高知の日曜市の風景"
-              fill
-              priority
-              style={{ objectFit: 'cover', objectPosition: 'center' }}
-            />
-            <figcaption className="photo-caption">
-              <span className="photo-caption-label">Top Visual</span>
-              <span className="photo-caption-text">
-                日曜市を起点に、高知高専の学生が地域課題に挑む。
-              </span>
-            </figcaption>
-          </figure>
-
-          {/* Nicchyo card */}
+      {/* メインコンテンツ */}
+      <motion.div
+        style={{
+          position: 'absolute',
+          bottom: '10%', left: 0, right: 0,
+          padding: '0 var(--px)',
+          y: textY,
+          opacity: textOp,
+        }}
+      >
+        <div style={{ maxWidth: 820 }}>
           <motion.div
-            className="nicchyo-card"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, ease, delay: 0.45 }}
+            transition={{ duration: 0.7, ease, delay: 0.2 }}
+            style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 24 }}
           >
-            <p className="nicchyo-label">First Project</p>
-            <h2 className="nicchyo-title">nicchyo</h2>
-            <p className="nicchyo-desc">
-              はじめての日曜市でも迷わず歩けるように。マップ・検索・案内役・現地検証を
-              一つの体験につなぐデジタルマップを育てています。
-            </p>
-            <div className="nicchyo-pills">
-              <span className="nicchyo-pill">地図</span>
-              <span className="nicchyo-pill">検索</span>
-              <span className="nicchyo-pill">案内役</span>
-              <span className="nicchyo-pill">フィールドワーク</span>
-            </div>
+            {['高知高専発', '2026年度始動', '部員大募集'].map((t) => (
+              <span key={t} style={{
+                display: 'inline-flex', alignItems: 'center',
+                height: 30, padding: '0 14px', borderRadius: 999,
+                background: 'rgba(255,255,255,0.10)',
+                border: '1px solid rgba(255,255,255,0.22)',
+                fontSize: '0.78rem', fontWeight: 800,
+                color: '#fff', letterSpacing: '0.06em',
+              }}>{t}</span>
+            ))}
           </motion.div>
-        </motion.div>
-      </div>
+
+          <motion.h1
+            className="display-serif"
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, ease, delay: 0.35 }}
+            style={{
+              fontSize: 'clamp(3.2rem, 7vw, 8rem)',
+              lineHeight: 1.04,
+              color: '#fff',
+              marginBottom: 28,
+              textShadow: '0 2px 24px rgba(0,0,0,0.30)',
+            }}
+          >
+            高知の課題を、<br />
+            DXでほどく。
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, ease, delay: 0.50 }}
+            style={{
+              fontSize: 'clamp(1rem, 1.6vw, 1.15rem)',
+              lineHeight: 1.8,
+              color: 'rgba(255,255,255,0.62)',
+              marginBottom: 36,
+              maxWidth: 500,
+            }}
+          >
+            高知高専の学生が地域課題に本気で向き合う、<br />
+            新しい実践型部活。2026年度から始動します。
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.70, ease, delay: 0.65 }}
+            style={{ display: 'flex', flexWrap: 'wrap', gap: 14 }}
+          >
+            <a className="btn btn-primary" href={ctaHref} target={ctaTarget} rel={ctaRel}>
+              部員として参加する
+            </a>
+            <a
+              className="btn btn-outline-white"
+              href="https://nicchyo-platform-git-develop-yutodesuys-projects.vercel.app?_vercel_share=xjdcMGY6Nrr6Rqse5BEqdPlOfu9fru58"
+              target="_blank" rel="noreferrer"
+            >
+              nicchyo を見る
+            </a>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* スクロールインジケーター */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1.4 }}
+        style={{
+          position: 'absolute', bottom: 32,
+          left: '50%', transform: 'translateX(-50%)',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', gap: 8,
+        }}
+      >
+        <motion.span
+          style={{
+            ...vertBase,
+            fontSize: '0.60rem', fontWeight: 800,
+            letterSpacing: '0.30em',
+            color: 'rgba(255,255,255,0.38)',
+          }}
+          animate={{ opacity: [0.38, 0.70, 0.38] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          スクロール
+        </motion.span>
+        <motion.div
+          animate={{ scaleY: [0, 1, 0], originY: 0 }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ width: 1, height: 40, background: 'rgba(255,255,255,0.35)' }}
+        />
+      </motion.div>
     </section>
   );
 }
