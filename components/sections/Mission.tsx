@@ -1,14 +1,10 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
-
-const vertBase: React.CSSProperties = {
-  writingMode: 'vertical-rl',
-  textOrientation: 'mixed',
-};
 
 const PANELS = [
   {
@@ -46,6 +42,199 @@ const PANELS = [
   },
 ];
 
+function MissionPanel({
+  p,
+  i,
+}: {
+  p: (typeof PANELS)[number];
+  i: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+
+  const numberY = useTransform(scrollYProgress, [0, 1], [90, -90]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [48, -48]);
+  const glowScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1.05, 0.95]);
+  const photoScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.12, 1, 1.12]);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        background: p.bg ?? '#1c0e06',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {p.photo && (
+        <>
+          <motion.div style={{ position: 'absolute', inset: 0, scale: photoScale }}>
+            <Image
+              src={p.photo}
+              alt=""
+              fill
+              sizes="100vw"
+              style={{
+                objectFit: 'cover',
+                objectPosition: p.photoPosition,
+              }}
+            />
+          </motion.div>
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(120deg, rgba(20,8,3,0.86) 0%, rgba(40,16,6,0.78) 60%, rgba(60,25,10,0.72) 100%)',
+            }}
+          />
+        </>
+      )}
+
+      <motion.div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: i % 2 === 0 ? '65%' : '25%',
+          transform: 'translate(-50%,-50%)',
+          width: '55vw',
+          height: '55vw',
+          borderRadius: '50%',
+          background: `radial-gradient(circle, ${p.accent}, transparent 65%)`,
+          pointerEvents: 'none',
+          scale: glowScale,
+        }}
+      />
+
+      <div
+        className="mission-panel-grid"
+        style={{
+          padding: '80px var(--px) 80px var(--px)',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 48,
+          alignItems: 'center',
+          position: 'relative',
+          minHeight: '60vh',
+        }}
+      >
+        <motion.div
+          className="mission-panel-number-wrap"
+          initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.85, ease }}
+          viewport={{ once: true, margin: '-80px' }}
+          style={{ order: i % 2 === 0 ? 0 : 1, y: numberY }}
+        >
+          <div
+            style={{
+              fontFamily: 'var(--font-display, serif)',
+              fontSize: 'clamp(6rem, 16vw, 18rem)',
+              fontWeight: 700,
+              lineHeight: 0.85,
+              color: 'rgba(255,255,255,0.07)',
+              userSelect: 'none',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {p.num}
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="mission-panel-content"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease, delay: 0.12 }}
+          viewport={{ once: true, margin: '-60px' }}
+          style={{ order: i % 2 === 0 ? 1 : 0, y: contentY }}
+        >
+          <span
+            style={{
+              display: 'block',
+              fontSize: '0.70rem',
+              fontWeight: 800,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.38)',
+              marginBottom: 20,
+            }}
+          >
+            0{i + 1} / 03
+          </span>
+          <h3
+            className="display-serif"
+            style={{
+              fontSize: 'clamp(2rem, 3.5vw, 3.8rem)',
+              color: '#fff',
+              lineHeight: 1.15,
+              whiteSpace: 'pre-line',
+              marginBottom: 24,
+            }}
+          >
+            {p.headline}
+          </h3>
+          <p
+            className="mission-panel-copy"
+            style={{
+              fontSize: '1rem',
+              lineHeight: 1.9,
+              color: 'rgba(255,255,255,0.55)',
+              maxWidth: 420,
+            }}
+          >
+            {p.sub}
+          </p>
+
+          {p.photo && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              viewport={{ once: true }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                marginTop: 28,
+                padding: '8px 16px 8px 10px',
+                borderRadius: 999,
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.14)',
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, var(--sun), var(--soil))',
+                  flexShrink: 0,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  color: 'rgba(255,255,255,0.60)',
+                  letterSpacing: '0.06em',
+                }}
+              >
+                撮影：2025年10月 日曜市来訪者ヒアリング
+              </span>
+            </motion.div>
+          )}
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
 export default function Mission() {
   return (
     <section id="mission">
@@ -56,22 +245,6 @@ export default function Mission() {
         textAlign: 'center',
         position: 'relative',
       }}>
-        <div aria-hidden="true" style={{
-          position: 'absolute', left: 20, top: '50%',
-          transform: 'translateY(-50%)',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', gap: 10,
-        }}>
-          <div style={{ width: 1, height: 40, background: 'linear-gradient(to bottom, transparent, rgba(123,63,25,0.22))' }} />
-          <span style={{
-            ...vertBase,
-            fontSize: '0.68rem', fontWeight: 800,
-            letterSpacing: '0.28em',
-            color: 'rgba(123,63,25,0.30)',
-          }}>ミッション</span>
-          <div style={{ width: 1, height: 40, background: 'linear-gradient(to bottom, rgba(123,63,25,0.22), transparent)' }} />
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -88,185 +261,42 @@ export default function Mission() {
         </motion.div>
       </div>
 
-      {/* 各パネル */}
       {PANELS.map((p, i) => (
-        <div
-          key={p.num}
-          style={{
-            background: p.bg ?? '#1c0e06',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          {/* 写真背景（パネル01のみ） */}
-          {p.photo && (
-            <>
-              <div style={{ position: 'absolute', inset: 0 }}>
-                <Image
-                  src={p.photo}
-                  alt=""
-                  fill
-                  sizes="100vw"
-                  style={{
-                    objectFit: 'cover',
-                    objectPosition: p.photoPosition,
-                  }}
-                />
-              </div>
-              {/* 暗いオーバーレイ（視認性確保） */}
-              <div style={{
-                position: 'absolute', inset: 0,
-                background: 'linear-gradient(120deg, rgba(20,8,3,0.86) 0%, rgba(40,16,6,0.78) 60%, rgba(60,25,10,0.72) 100%)',
-              }} />
-            </>
-          )}
-
-          {/* 背景グロー */}
-          <div aria-hidden="true" style={{
-            position: 'absolute',
-            top: '50%', left: i % 2 === 0 ? '65%' : '25%',
-            transform: 'translate(-50%,-50%)',
-            width: '55vw', height: '55vw', borderRadius: '50%',
-            background: `radial-gradient(circle, ${p.accent}, transparent 65%)`,
-            pointerEvents: 'none',
-          }} />
-
-          {/* 縦書き：左端ラベル */}
-          <motion.div
-            aria-hidden="true"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1.0, ease, delay: 0.3 }}
-            viewport={{ once: true, margin: '-80px' }}
-            style={{
-              position: 'absolute',
-              left: 0, top: 0, bottom: 0,
-              width: 44,
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center',
-              gap: 14,
-              borderRight: '1px solid rgba(255,255,255,0.07)',
-            }}
-          >
-            <span style={{
-              ...vertBase,
-              fontSize: '0.64rem', fontWeight: 800,
-              letterSpacing: '0.30em',
-              color: 'rgba(255,255,255,0.22)',
-            }}>
-              {p.label}
-            </span>
-            <span style={{
-              ...vertBase,
-              fontFamily: 'var(--font-display, serif)',
-              fontSize: '1.4rem', fontWeight: 700,
-              color: 'rgba(255,255,255,0.10)',
-              letterSpacing: '0.10em',
-            }}>
-              {p.numJa}
-            </span>
-          </motion.div>
-
-          <div style={{
-            padding: '80px var(--px) 80px calc(var(--px) + 44px)',
-            display: 'grid',
-            gridTemplateColumns: i % 2 === 0 ? '1fr 1fr' : '1fr 1fr',
-            gap: 48,
-            alignItems: 'center',
-            position: 'relative',
-            minHeight: '60vh',
-          }}>
-            {/* 大きな数字（装飾） */}
-            <motion.div
-              initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.85, ease }}
-              viewport={{ once: true, margin: '-80px' }}
-              style={{ order: i % 2 === 0 ? 0 : 1 }}
-            >
-              <div style={{
-                fontFamily: 'var(--font-display, serif)',
-                fontSize: 'clamp(6rem, 16vw, 18rem)',
-                fontWeight: 700,
-                lineHeight: 0.85,
-                color: 'rgba(255,255,255,0.07)',
-                userSelect: 'none',
-                letterSpacing: '-0.02em',
-              }}>
-                {p.num}
-              </div>
-            </motion.div>
-
-            {/* テキスト */}
-            <motion.div
-              initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.80, ease, delay: 0.12 }}
-              viewport={{ once: true, margin: '-60px' }}
-              style={{ order: i % 2 === 0 ? 1 : 0 }}
-            >
-              <span style={{
-                display: 'block',
-                fontSize: '0.70rem', fontWeight: 800,
-                letterSpacing: '0.22em', textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.38)',
-                marginBottom: 20,
-              }}>
-                0{i + 1} / 03
-              </span>
-              <h3
-                className="display-serif"
-                style={{
-                  fontSize: 'clamp(2rem, 3.5vw, 3.8rem)',
-                  color: '#fff', lineHeight: 1.15,
-                  whiteSpace: 'pre-line',
-                  marginBottom: 24,
-                }}
-              >
-                {p.headline}
-              </h3>
-              <p style={{
-                fontSize: '1rem', lineHeight: 1.9,
-                color: 'rgba(255,255,255,0.55)',
-                maxWidth: 420,
-              }}>
-                {p.sub}
-              </p>
-
-              {/* 写真パネルの場合のみ撮影日バッジ */}
-              {p.photo && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                  viewport={{ once: true }}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
-                    marginTop: 28, padding: '8px 16px 8px 10px',
-                    borderRadius: 999,
-                    background: 'rgba(255,255,255,0.08)',
-                    border: '1px solid rgba(255,255,255,0.14)',
-                    backdropFilter: 'blur(8px)',
-                  }}
-                >
-                  <span style={{
-                    width: 6, height: 6, borderRadius: '50%',
-                    background: 'linear-gradient(135deg, var(--sun), var(--soil))',
-                    flexShrink: 0,
-                  }} />
-                  <span style={{
-                    fontSize: '0.72rem', fontWeight: 700,
-                    color: 'rgba(255,255,255,0.60)',
-                    letterSpacing: '0.06em',
-                  }}>
-                    撮影：2025年10月 日曜市来訪者ヒアリング
-                  </span>
-                </motion.div>
-              )}
-            </motion.div>
-          </div>
-        </div>
+        <MissionPanel key={p.num} p={p} i={i} />
       ))}
+
+      <style jsx global>{`
+        @media (max-width: 900px) {
+          .mission-panel-grid {
+            grid-template-columns: minmax(0, 1fr) !important;
+            gap: 20px !important;
+            padding-top: 64px !important;
+            padding-bottom: 64px !important;
+          }
+
+          .mission-panel-number-wrap {
+            position: absolute;
+            top: 28px;
+            right: max(var(--px), 24px);
+            z-index: 0;
+            opacity: 0.95;
+            pointer-events: none;
+          }
+
+          .mission-panel-content {
+            order: 1 !important;
+            position: relative;
+            z-index: 1;
+            width: 100% !important;
+            max-width: none !important;
+            justify-self: stretch !important;
+          }
+
+          .mission-panel-copy {
+            max-width: 100% !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

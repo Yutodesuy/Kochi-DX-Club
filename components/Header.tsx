@@ -5,9 +5,8 @@ import { useState, useEffect } from 'react';
 const NAV = [
   { href: '#mission', label: '部活の目的' },
   { href: '#project', label: '第一目標' },
-  { href: '#workflow', label: '進め方' },
-  { href: '#timeline', label: '活動実績' },
-  { href: '#join', label: '参加する' },
+  { href: '#learning', label: '学べること' },
+  { href: '#join', label: '応募' },
 ];
 
 export default function Header({ formUrl }: { formUrl: string }) {

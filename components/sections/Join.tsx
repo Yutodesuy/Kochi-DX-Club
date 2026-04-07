@@ -4,13 +4,6 @@ import { motion } from 'framer-motion';
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
-const ROLES = [
-  { icon: '💻', label: 'エンジニア',   sub: 'フロント / バック / データ' },
-  { icon: '🎨', label: 'デザイナー',   sub: 'UI/UX / グラフィック' },
-  { icon: '🔍', label: 'リサーチャー', sub: 'インタビュー / 現地調査' },
-  { icon: '📋', label: 'プランナー',   sub: '企画 / 渉外 / 発表' },
-];
-
 export default function Join({ formUrl }: { formUrl: string }) {
   const ctaHref   = formUrl || '#join';
   const ctaTarget = formUrl ? '_blank' : undefined;
@@ -44,57 +37,6 @@ export default function Join({ formUrl }: { formUrl: string }) {
         pointerEvents: 'none',
       }} />
 
-      {/* 縦書き：左端「参加する」 */}
-      <motion.div
-        aria-hidden="true"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 1.0, delay: 0.3 }}
-        viewport={{ once: true }}
-        style={{
-          position: 'absolute',
-          left: 16, top: '50%',
-          transform: 'translateY(-50%)',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', gap: 12,
-        }}
-      >
-        <div style={{ width: 1, height: 56, background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.14))' }} />
-        <span style={{
-          writingMode: 'vertical-rl',
-          fontSize: '0.64rem', fontWeight: 800,
-          letterSpacing: '0.30em',
-          color: 'rgba(255,255,255,0.15)',
-        }}>参加する</span>
-        <div style={{ width: 1, height: 56, background: 'linear-gradient(to bottom, rgba(255,255,255,0.14), transparent)' }} />
-      </motion.div>
-
-      {/* 縦書き：右端「二〇二六年度始動」 */}
-      <motion.div
-        aria-hidden="true"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 1.0, delay: 0.4 }}
-        viewport={{ once: true }}
-        style={{
-          position: 'absolute',
-          right: 16, top: '50%',
-          transform: 'translateY(-50%)',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', gap: 12,
-        }}
-      >
-        <div style={{ width: 1, height: 56, background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.14))' }} />
-        <span style={{
-          writingMode: 'vertical-rl',
-          fontFamily: 'var(--font-display, serif)',
-          fontSize: '0.78rem', fontWeight: 700,
-          letterSpacing: '0.24em',
-          color: 'rgba(255,255,255,0.12)',
-        }}>二〇二六年度始動</span>
-        <div style={{ width: 1, height: 56, background: 'linear-gradient(to bottom, rgba(255,255,255,0.14), transparent)' }} />
-      </motion.div>
-
       <div style={{ padding: '0 var(--px)', position: 'relative' }}>
         {/* メインコピー */}
         <motion.div
@@ -118,59 +60,21 @@ export default function Join({ formUrl }: { formUrl: string }) {
               lineHeight: 1.06, color: '#fff', marginBottom: 28,
             }}
           >
-            高知高専で、<br />
-            課題解決の<br />
-            最前線に立つ。
+            実践型の学びで、<br />
+            高知県の未来を<br />
+            一緒に考えてみませんか？
           </h2>
 
           <p style={{
             fontSize: 'clamp(1rem, 1.5vw, 1.15rem)',
             lineHeight: 1.85,
             color: 'rgba(255,255,255,0.48)',
-            maxWidth: 520, margin: '0 auto',
+            maxWidth: 620, margin: '0 auto',
           }}>
-            コードが書けなくても大丈夫。<br />
-            開発・デザイン・調査・企画、あなたの得意を活かせる場がある。
+            コードが書けなくても大丈夫。
+            高知DX部では、調査、企画、開発、広報を横断して関われます。
+            一つの工程から入りつつ、プロジェクト全体を見渡せる力を育てます。
           </p>
-        </motion.div>
-
-        {/* ロールカード */}
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.75, ease, delay: 0.12 }}
-          viewport={{ once: true, margin: '-60px' }}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 12,
-            maxWidth: 880, margin: '0 auto 56px',
-          }}
-        >
-          {ROLES.map((r, i) => (
-            <motion.div
-              key={r.label}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease, delay: 0.15 + i * 0.08 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              style={{
-                padding: '28px 20px', borderRadius: 20,
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.09)',
-                textAlign: 'center', cursor: 'default',
-              }}
-            >
-              <div style={{ fontSize: 32, marginBottom: 12 }}>{r.icon}</div>
-              <div style={{ fontSize: '1rem', fontWeight: 800, color: '#fff', marginBottom: 6 }}>
-                {r.label}
-              </div>
-              <div style={{ fontSize: '0.80rem', lineHeight: 1.55, color: 'rgba(255,255,255,0.35)' }}>
-                {r.sub}
-              </div>
-            </motion.div>
-          ))}
         </motion.div>
 
         {/* CTA */}
@@ -203,7 +107,7 @@ export default function Join({ formUrl }: { formUrl: string }) {
             textAlign: 'center', lineHeight: 1.7,
           }}>
             ※ 応募フォームは準備が整い次第このページに掲載します。<br />
-            まずは気軽に話しかけてみてください。
+            高知高専で、地域課題に本気で向き合いたい学生を歓迎します。
           </p>
         </motion.div>
       </div>

@@ -1,22 +1,21 @@
 # Kochi-DX-Club
 
-高知高専で立ち上げる「高知DX部」の静的トップページです。
+高知高専で2026年度から始動する「高知DX部」の Next.js サイトです。
 
-## Files
-
-- `index.html`: ホームページ本体
-- `styles.css`: レイアウトとデザイン
-- `script.js`: メニュー開閉とスクロール演出
-- `favicon.svg`: アイコン
-
-## Preview
-
-ブラウザで `index.html` を直接開くか、簡易サーバーで確認できます。
+## Development
 
 ```powershell
-py -m http.server 8000
+npm install
+npm run dev
 ```
+
+## Main files
+
+- `app/page.tsx`: トップページの組み立て
+- `app/layout.tsx`: メタデータと共通レイアウト
+- `app/globals.css`: グローバルスタイル
+- `components/sections/*`: 各セクション
 
 ## Note
 
-応募導線の Googleフォーム URL は `script.js` の `GOOGLE_FORM_URL` に設定する想定です。
+応募導線の Googleフォーム URL は `app/page.tsx` の `FORM_URL` に設定する想定です。
